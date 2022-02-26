@@ -20,4 +20,10 @@ public class Facade {
     lista = dao.readAll();
     return lista;
     }
+    
+     public boolean borrar(ProductoDTO elim) {
+        ProductoDAO dao = new ProductoDAO();
+        return dao.delete(elim);
+        
+    }
 }

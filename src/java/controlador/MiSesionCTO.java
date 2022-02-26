@@ -7,18 +7,23 @@ package controlador;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import modelo.dto.ProductoDTO;
+import javax.servlet.http.HttpSession;
+import modelo.dao.UsuarioDAO;
+import modelo.dto.UsuarioDTO;
 
 /**
  *
  * @author 57321
  */
-public class ProductoCTO extends HttpServlet {
+public class MiSesionCTO extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -31,34 +36,52 @@ public class ProductoCTO extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        Facade fcd = new Facade();
-//                List<ProductoDTO> lista = fcd.listarProductos();
-//                request.setAttribute("lista_productos", lista);
-//                request.getRequestDispatcher("ProductoVTA.jsp").forward(request, response);
-                 String accion = request.getParameter("accion");
+        String accion = request.getParameter("accion");
+        
+        
         switch (accion) {
-            case "listar_datos":
-                List<ProductoDTO> lista = fcd.listarProductos();
-                request.setAttribute("lista_productos", lista);
-                request.getRequestDispatcher("ProductoVTA.jsp").forward(request, response);
-                //request.getRequestDispatcher("ProductoCTO?accion=listar_datos").forward(request, response);
-                break;
-            case "eliminar":
-                int id = Integer.parseInt(request.getParameter("id"));
-                ProductoDTO elim = new ProductoDTO();
-                elim.setId_prod(id);
-                boolean s = fcd.borrar(elim);
-                if(s){
-                    System.out.println("OK borrado");
+            case "validar":
+                UsuarioDAO dao = new UsuarioDAO();
+                String usuario = request.getParameter("txtUsuario");
+                String clave = this.asegurarClave(request.getParameter("txtPss")+"pitufo25.");
+                UsuarioDTO dto = new UsuarioDTO(usuario, clave);
+                dto = dao.valSesion(dto);
+                
+                
+                if(dto != null){
+                    HttpSession session = request.getSession();
+                    session.setAttribute("usActual", dto);
+                    request.getRequestDispatcher("ProductoCTO?accion=listar_datos").forward(request, response);
                 }else{
-                    System.out.println("NO BORROOOO");
+                    System.out.println("No valido");
+                    request.getRequestDispatcher("index.jsp").forward(request, response);
                 }
-                request.getRequestDispatcher("ProductoCTO?accion=listar_datos").forward(request, response);
+                break;
+            case "salir":
+                
                 break;
             default:
                 throw new AssertionError();
         }
-                }
+        
+    }
+    
+    private String asegurarClave (String clave){
+        String claveCifrada ="";
+        
+        try {
+            MessageDigest sha256= MessageDigest.getInstance("SHA-256");
+            sha256.reset();
+            sha256.update(clave.getBytes("utf8"));
+            claveCifrada = Base64.getEncoder().encodeToString(sha256.digest());
+            System.out.println("clave cifrada :" +claveCifrada);
+            System.out.println("tamaño: "+claveCifrada.length());
+        } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
+            System.out.println("error en el ciframiento"+ex.getMessage());
+        }
+            
+        return claveCifrada;
+    }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**

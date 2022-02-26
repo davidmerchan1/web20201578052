@@ -11,7 +11,7 @@ public class ConexionMySQL {
   
     private static ConexionMySQL instance;
     private Connection cnn;
-    private String driver = "com.mysql.cj.jdbc.Driver";
+    private String driver = "com.mysql.jdbc.Driver";
     private String user = "root";      
     private String pss = "";      
     private String nom_bd = "bd_tallerjavaweb";
@@ -20,7 +20,7 @@ public class ConexionMySQL {
     private ConexionMySQL(){
         try {
             Class.forName(driver);
-            cnn = DriverManager.getConnection(url+nom_bd, user, pss);
+            cnn = DriverManager.getConnection(url + nom_bd, user, pss);
         } catch (ClassNotFoundException | SQLException ex) {
             System.out.print("error en driver mysql"+ex.getMessage());
         }

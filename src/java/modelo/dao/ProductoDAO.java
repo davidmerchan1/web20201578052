@@ -17,17 +17,20 @@ import modelo.interfaces.Obligacion;
 
 
 
-public class ProductoDAO implements Obligacion <ProductoDTO> {
+public class ProductoDAO implements Obligacion<ProductoDTO> {
     
-    private static final String SQL_CREATE = "INSERT INTO tb_producto"
-            + "(nombre_producto, descripcion_producto, unidades, valor) VALUES(?,?,?,?)";
+    private static final String SQL_CREATE = "INSERT INTO tb_producto "
+            + "(nombre_producto, descripcion_porducto, unidades, valor) VALUES(?,?,?,?) ";
     
-    private static final String SQL_DELETE = "DELETE FROM tb_producto WHERE id_producto = ? ";
+    private static final String SQL_DELETE = "DELETE FROM tb_producto "
+            + "WHERE id_producto = ? ";
     
     private static final String SQL_UPDATE = "UPDATE tb_producto SET"
-            + "(nombre_producto = ?, descripcion_producto = ?, unidades = ?, valor = ?) WHERE id_productos = ? ";
+            + "nombre_producto = ?, descripcion_porducto = ?, unidades = ?, valor = ?"
+            + "WHERE id_producto = ? ";
     
-    private static final String SQL_READ = "SELECT * FROM tb_producto WHERE id_producto = ? ";
+    private static final String SQL_READ = "SELECT * FROM tb_producto "
+            + "WHERE id_producto = ?";
     
     private static final String SQL_READALL = "SELECT * FROM tb_producto ";
     
@@ -66,7 +69,7 @@ public class ProductoDAO implements Obligacion <ProductoDTO> {
             while (rs.next()){
               ProductoDTO obj = new ProductoDTO(
               rs.getInt("id_producto"),
-              rs.getString("nombre_productos"),
+              rs.getString("nombre_producto"),
               rs.getString("descripcion_producto"),
               rs.getInt("unidades"), 
               rs.getLong("valor"));
@@ -94,7 +97,7 @@ public class ProductoDAO implements Obligacion <ProductoDTO> {
             if(rs.next()){
               objRes = new ProductoDTO(
                rs.getInt("id_producto"),
-              rs.getString("nombre_productos"),
+              rs.getString("nombre_producto"),
               rs.getString("descripcion_producto"),
               rs.getInt("unidades"), 
               rs.getLong("valor"));    
